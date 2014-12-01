@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 smartgwt5maven
 ==============
 
@@ -13,3 +14,10 @@ and
 ```bash
 mvn gwt:run #to run the server
 ```
+=======
+ProjetGl
+========
+
+Projet Génie Logiciel pour l'Ensai
+Créé par Sydney Becu, Perrine Le Lann et Lubin Lemarchand
+>>>>>>> 9a2057a95fa0604cbd60fd2907fcde75aaffbea9
