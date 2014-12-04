@@ -2,7 +2,7 @@ package fr.ensai.projet.client;
 
 /**
  * Interface to represent the messages contained in resource bundle:
- * 	/home/sydney/Documents/ProjetGenieLog/smartgwt5maven-master/src/main/resources/fr/ensai/projet/client/Messages.properties'.
+ * 	/home/sydney/Documents/ProjetGenieLog/WorkGitHub/ProjetGl/src/main/resources/fr/ensai/projet/client/Messages.properties'.
  */
 public interface Messages extends com.google.gwt.i18n.client.Messages {
   
