@@ -5,4 +5,7 @@ public class Cellule {
 	//NNNNNNNNNNNNNNNNNNNN
 	
 	//MMMMM
+	//BB
+	
+	//AA
 }
