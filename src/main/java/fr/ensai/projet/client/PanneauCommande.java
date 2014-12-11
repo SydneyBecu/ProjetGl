@@ -23,30 +23,16 @@ public class PanneauCommande extends VLayout {
 	private final static int LARGEUR=300;
 	final Label labelAnswer = new Label("Your answer here");
 	IButton AjoutLigne = new IButton("Ajouter une ligne"); 
-	CreateurColonne CreaCol = new CreateurColonne();
+	CreateurColonne CreaCol= new CreateurColonne();
 	SuppresseurLigne supLigne = new SuppresseurLigne();
 	SuppresseurColonne supCol = new SuppresseurColonne();
     SelectItem MasquerLigne = new SelectItem();  
     SelectItem MasquerColonne = new SelectItem();  
     IButton Sauvegarder = new IButton("Sauver"); 
     IButton Charger = new IButton("Charger"); 
-    PanneauMatrice panneauMatrice;
+	PanneauMatrice panneauMatrice;
+
     
-    
-    
-    
-    public PanneauMatrice getPanneauMatrice() {
-		return panneauMatrice;
-	}
-
-
-
-
-	public void setPanneauMatrice(PanneauMatrice panneauMatrice) {
-		this.panneauMatrice = panneauMatrice;
-	}
-
-
 
 
 	PanneauCommande(){
@@ -81,8 +67,9 @@ public class PanneauCommande extends VLayout {
     
 	
     this.addMember(AjoutLigne);
+    CreaCol.setPanneauMatrice(panneauMatrice);
     this.addMember(CreaCol);
-    
+    supLigne.setPanneauMatrice(panneauMatrice);
     this.addMember(supLigne);
     this.addMember(supCol);
     
@@ -110,4 +97,97 @@ public class PanneauCommande extends VLayout {
 
 
 }
+	
+	
+	
+	
+	public CreateurColonne getCreaCol() {
+		return CreaCol;
+	}
+
+
+
+
+	public void setCreaCol(CreateurColonne creaCol) {
+		CreaCol = creaCol;
+	}
+
+
+
+
+	public SuppresseurLigne getSupLigne() {
+		return supLigne;
+	}
+
+
+
+
+	public void setSupLigne(SuppresseurLigne supLigne) {
+		this.getSupLigne().setPanneauMatrice(panneauMatrice);
+
+		this.supLigne = supLigne;
+	}
+
+
+
+
+	public SuppresseurColonne getSupCol() {
+		return supCol;
+	}
+
+
+
+
+	public void setSupCol(SuppresseurColonne supCol) {
+		this.supCol = supCol;
+	}
+
+
+
+
+	public SelectItem getMasquerLigne() {
+		return MasquerLigne;
+	}
+
+
+
+
+	public void setMasquerLigne(SelectItem masquerLigne) {
+		MasquerLigne = masquerLigne;
+	}
+
+
+
+
+	public SelectItem getMasquerColonne() {
+		return MasquerColonne;
+	}
+
+
+
+
+	public void setMasquerColonne(SelectItem masquerColonne) {
+		MasquerColonne = masquerColonne;
+	}
+
+
+
+
+    
+    
+    
+    
+    public PanneauMatrice getPanneauMatrice() {
+		return panneauMatrice;
+	}
+
+
+
+
+	public void setPanneauMatrice(PanneauMatrice panneauMatrice) {
+		this.panneauMatrice = panneauMatrice;
+		this.getCreaCol().setPanneauMatrice(panneauMatrice);
+	}
+
+
 }

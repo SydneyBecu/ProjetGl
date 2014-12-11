@@ -111,8 +111,7 @@ public class projetgl implements EntryPoint {
 	  RootLayoutPanel.get().add(mainLayout);
 	  
 	  panneauCommande.setPanneauMatrice(panneauMatrice);
-
-	  
+	 
 	  
   }
 }
