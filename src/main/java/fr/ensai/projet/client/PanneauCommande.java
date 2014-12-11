@@ -5,8 +5,10 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Button;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.Overflow;
@@ -21,13 +23,33 @@ public class PanneauCommande extends VLayout {
 	private final static int LARGEUR=300;
 	final Label labelAnswer = new Label("Your answer here");
 	IButton AjoutLigne = new IButton("Ajouter une ligne"); 
-	IButton AjoutColonne = new IButton("Ajouter une colonne");
-	ComboBoxItem SuppressionLigne = new ComboBoxItem();
-	ComboBoxItem SuppressionColonne = new ComboBoxItem();
-    final SelectItem MasquerLigne = new SelectItem();  
-    final SelectItem MasquerColonne = new SelectItem();  
+	CreateurColonne CreaCol = new CreateurColonne();
+	SuppresseurLigne supLigne = new SuppresseurLigne();
+	SuppresseurColonne supCol = new SuppresseurColonne();
+    SelectItem MasquerLigne = new SelectItem();  
+    SelectItem MasquerColonne = new SelectItem();  
+    IButton Sauvegarder = new IButton("Sauver"); 
+    IButton Charger = new IButton("Charger"); 
+    PanneauMatrice panneauMatrice;
+    
+    
+    
+    
+    public PanneauMatrice getPanneauMatrice() {
+		return panneauMatrice;
+	}
 
-	public PanneauCommande(){
+
+
+
+	public void setPanneauMatrice(PanneauMatrice panneauMatrice) {
+		this.panneauMatrice = panneauMatrice;
+	}
+
+
+
+
+	PanneauCommande(){
 		super();
 		this.setWidth(LARGEUR);
 		this.setShowEdges(true);
@@ -49,59 +71,20 @@ public class PanneauCommande extends VLayout {
     AjoutLigne.setLeft(300);  
     AjoutLigne.addClickHandler(new ClickHandler() {  
         public void onClick(ClickEvent event) {  
-            final Dialog dialogProperties = new Dialog();  
-            dialogProperties.setWidth(300);  
-            SC.askforValue("Ajout de ligne", "Nom de la ligne", "", new ValueCallback() {  
-                  
-                public void execute(String value) {  
-                    if (value != null) {  
-                        labelAnswer.setContents(value);  
-                    } else {  
-                        labelAnswer.setContents("Cancel");  
-                    }  
-                }  
-            }, dialogProperties);  
+             
+            panneauMatrice.ajouterLigne();
+            
         }  
     });  
     
-    AjoutLigne.setLeft(300);  
-    AjoutLigne.addClickHandler(new ClickHandler() {  
-        public void onClick(ClickEvent event) {  
-            final Dialog dialogProperties = new Dialog();  
-            dialogProperties.setWidth(300);  
-            SC.askforValue("Ajout de colonne", "Nom de la colonne", "", new ValueCallback() {  
-                  
-                public void execute(String value) {  
-                    if (value != null) {  
-                        labelAnswer.setContents(value);  
-                    } else {  
-                        labelAnswer.setContents("Cancel");  
-                    }  
-                }  
-            }, dialogProperties);  
-        }  
-    });  
+    
     
 	
     this.addMember(AjoutLigne);
-    this.addMember(AjoutColonne);
+    this.addMember(CreaCol);
     
-    //Boutons déroulants pour suppression de ligne et de colonne.
-    
-    DynamicForm formSupp = new DynamicForm();
-    SuppressionLigne.setTitle("Supprimer une ligne");  
-    SuppressionLigne.setType("comboBox");  
-    SuppressionLigne.setValueMap("Yolo", "Swag");  
-
-    
-     
-    SuppressionColonne.setTitle("Supprimer une colonne");  
-    SuppressionColonne.setType("comboBox");  
-    SuppressionColonne.setValueMap("Cat", "Dog");  
-    formSupp.setFields(SuppressionLigne,SuppressionColonne);
-
-    this.addMember(formSupp);
-    
+    this.addMember(supLigne);
+    this.addMember(supCol);
     
    // Multi select pour Masquer
     
@@ -120,6 +103,11 @@ public class PanneauCommande extends VLayout {
     formMasq.setItems(MasquerLigne,MasquerColonne);
     this.addMember(formMasq);
     
+    //Boutons Sauvegarder/Charger A changer en trouvant comment appeler un file system
+    
+    this.addMember(Sauvegarder);
+    this.addMember(Charger);
+
 
 }
 }

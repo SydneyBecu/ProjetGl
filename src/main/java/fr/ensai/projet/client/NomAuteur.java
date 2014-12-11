@@ -34,14 +34,15 @@ public class NomAuteur extends HLayout {
 	  Label nom = new Label();
 	  Label auteur = new Label();
 	  
-	  nom.setContents("Nom : ");
-	  auteur.setContents("Auteur : ");
+	  nom.setContents("<b>Nom de la matrice: </b> "
+	  		+ "<p/> <b>Auteur</b> : ");
+	  //auteur.setContents("<b>Auteur : </b>");
 	  nom.setAlign(Alignment.CENTER);
-	  auteur.setAlign(Alignment.RIGHT);
+	  //auteur.setAlign(Alignment.RIGHT);
 	  
 	  //On rattache les labels au Layout Horizontal
 	  this.addMember(nom);
-	  this.addMember(auteur);
+	  //this.addMember(auteur);
 	
 	  
 	  //On rajoute les boutons:

@@ -3,6 +3,7 @@ package fr.ensai.projet.client;
 import fr.ensai.projet.shared.FieldVerifier;
 
 import com.smartgwt.client.widgets.Canvas;  
+import com.smartgwt.client.widgets.Dialog;
 import com.smartgwt.client.widgets.HTMLFlow;  
   
 
@@ -28,6 +29,7 @@ import com.smartgwt.client.core.KeyIdentifier;
 import com.smartgwt.client.util.KeyCallback;
 import com.smartgwt.client.util.Page;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -107,32 +109,10 @@ public class projetgl implements EntryPoint {
 	  
 	  //On rattache le mainLayout au rootPanel
 	  RootLayoutPanel.get().add(mainLayout);
+	  
+	  panneauCommande.setPanneauMatrice(panneauMatrice);
 
 	  
-
-	  
-	  
-	  
-	 /*
-		DynamicForm form = new DynamicForm();
-		TextItem salutationItem = new TextItem();
-		salutationItem.setName("salutation");
-		salutationItem.setTitle("Title");
-		TextItem firstNameItem = new TextItem();
-		firstNameItem.setName("firstname");
-		firstNameItem.setTitle("Premier Name");
-		TextItem lastNameItem = new TextItem();
-		lastNameItem.setName("lastname");
-		lastNameItem.setTitle("Last Name");
-		TextItem lastNameItem1 = new TextItem();
-		lastNameItem1.setName("lastname1");
-		lastNameItem1.setTitle("Last Name1");
-
-		form.setFields(new FormItem[] {
-		 salutationItem, firstNameItem, lastNameItem,lastNameItem1
-		});
-		form.draw();
-	  */
 	  
   }
 }
