@@ -10,13 +10,23 @@ import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.SelectionStyle;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.util.ValueCallback;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Dialog;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.validator.IntegerRangeValidator;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.CellClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellClickHandler;
+import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
 import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.smartgwt.client.widgets.grid.events.RowOverEvent;
@@ -24,13 +34,18 @@ import com.smartgwt.client.widgets.grid.events.RowOverHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.viewer.DetailViewer;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
-public class PanneauMatrice extends HLayout {
+public class PanneauMatrice extends VLayout {
 	// Hauteur du panneau contenant la matrice.
 	private final static int Hauteur=400;
 	
+	PanneauCommentaires panneauCom;
+	
+	IButton ajouterDesc = new IButton("Ajouter Description");
+
 	// La matrice
 	ListGrid Grid = new ListGrid();
 	// Le constructeur
@@ -61,8 +76,8 @@ public class PanneauMatrice extends HLayout {
 	        
 	       // Grid.setAlternateRecordStyles(true);
 	    //Fait que l'on puisse supprimer une ligne    
-	        Grid.setCanRemoveRecords(true);
-	    
+	       // Grid.setCanRemoveRecords(true);
+	        Grid.setWarnOnRemoval(true);
 	        /*
 	        Grid.setEmptyMessage("Ajoutez des lignes ou des colonnes");
 	        ListGridField Nom = new ListGridField("Bière");
@@ -71,7 +86,8 @@ public class PanneauMatrice extends HLayout {
 	        
 	        Grid.setFields(Nom,Prix,Qualité);
 	        */	       
-	        //Grid.setCanSelectCells(true);
+	        
+	        Grid.setCanSelectCells(true);
 	        // Affichage du contenu lorsque l'on passe sur l'élément
 	        Grid.setCanHover(true);
 	        // On peut sélectionner tous les éléments
@@ -79,9 +95,78 @@ public class PanneauMatrice extends HLayout {
 	        //Grid.setShowRollOver(true);
 	        // Affichage du numéo des lignes.
 	        Grid.setShowRowNumbers(true);
+	        //Filtre
+	        Grid.setAutoFetchData(true);
+	        Grid.setShowFilterEditor(true);
 	        //On ajoute la matrice au panneau
+	        
+	        Grid.addCellContextClickHandler(new CellContextClickHandler() {
+				
+				public void onCellContextClick(CellContextClickEvent event) {
+					final Dialog dialogProperties = new Dialog();  
+		             dialogProperties.setWidth(300);  
+		             SC.askforValue("Nouveau nom", "Nom du PCM", "", new ValueCallback() {  
+		                   
+		                 public void execute(String value) {  
+		                     if (value != null) {  
+		                    	 int [][] celluleChoisie = Grid.getCellSelection().getSelectedCells();
+		                    	 int ligne = celluleChoisie[0][0];
+		                    	 int colonne =celluleChoisie[0][1];
+		                    	 panneauCom.ajouterCommentaire(ligne, colonne, value);
+		                    	 //panneauCom.afficherComm(ligne, colonne);
+		                     } else {  
+		                     }  
+		                 }  
+		             }, dialogProperties);  
+					
+				}
+			});
+	        
+	        Grid.addCellClickHandler(new CellClickHandler() {
+				
+				public void onCellClick(CellClickEvent event) {
+					// TODO Auto-generated method stub
+					//Window.alert("entree simple click");
+					int [][] celluleChoisie = Grid.getCellSelection().getSelectedCells();
+               	 int ligne = celluleChoisie[0][0];
+               	// Window.alert(""+ligne);
+               	 int colonne =celluleChoisie[0][1];
+               	 //Window.alert(""+colonne);
+
+               	 String com = panneauCom.recupererCommentaire(ligne, colonne);
+               	 //Window.alert(com);
+               	 panneauCom.afficherCommentaire(com);
+				}
+			});
+	        
+	        
+	        ajouterDesc.addClickHandler(new ClickHandler() {  
+	            public void onClick(ClickEvent event) {  
+	                final Dialog dialogProperties = new Dialog();  
+	                dialogProperties.setWidth(300);  
+	                SC.askforValue("Description de la PCM", "Entrer description", "", new ValueCallback() {  
+	                      
+	                    public void execute(String value) {  
+	                        if (value != null) {  
+	                        	panneauCom.descriptionLab.setContents("Description de la matrice : <b>" +value + "</b>");
+	                        	
+	                        } else {  
+	                            Label labelAnswer =new Label();
+								labelAnswer.setContents("Cancel");  
+	                        }  
+	                    
+	                    }}, dialogProperties);  
+	            }  
+	        });  
+	        
+	        
+	        
 	        this.addMember(Grid);
+	        this.addMember(ajouterDesc);
+
 	       	}
+	
+			
 	
 	//Récupérer le nom des colonnes
 	public ArrayList<String> recupHeadersCol(){
@@ -160,37 +245,44 @@ public class PanneauMatrice extends HLayout {
 		Grid = new ListGrid();
 	}
 	
-	
+	//Permet de supprimer une colonne
 	public void supprimerField(String nom){
-		boolean indic = false;
-		ListGrid nouvelle = new ListGrid();
+		boolean indic = false;		
+		int nbcol=Grid.getAllFields().length;
+		int compteurNew = 0;		
+		//Liste des nouvelles colonnes
+		ListGridField[] listeNew = new ListGridField[nbcol-3];
 		
-		int nbcol=Grid.getAllFields().length-2;
-		Window.alert(""+nbcol);
-		ListGridField[] listeNew = new ListGridField[nbcol-1];
-
+		//Pour chaque colonne de la grille
 		for(int i=0;i<nbcol;i++){
-			Window.alert(""+indic);
-			Window.alert(nom + " "+Grid.getAllFields()[i+2].getName());
-			if(Grid.getAllFields()[i+2].getName().equals(nom) && !indic){
+			//Pour les colonnes n'étant pas les index ou suppresseur de ligne
+			if(Grid.getFieldName(i)!="$61b" && Grid.getFieldName(i)!="$74y"){
+				
+				
+			if(Grid.getAllFields()[i].getName().equals(nom) && !indic){
 				indic = true;
+				panneauCom.supprimerCol(i);
+
 			}
-			else if(!indic){
-				ListGridField field = Grid.getAllFields()[i+2];
-				listeNew[i]=field;
-			}
+			
 			else{
-				ListGridField field = Grid.getAllFields()[i+2];
-				listeNew[i-1]=field;
+				ListGridField field = Grid.getAllFields()[i];
+				listeNew[compteurNew]=field;
+				compteurNew++;
+
 			}
-		}
-		
-		for(int i=0;i<nbcol-1;i++	){
-			Window.alert(nouvelle.getAllFields()[i].getName());
+			}
 		}
 		Grid.setFields(listeNew);
+		this.addMember(Grid);
 	}
- 
+	
+	public PanneauCommentaires getPanneauCom() {
+		return panneauCom;
+	}
 
+	public void setPanneauCom(PanneauCommentaires panneauCom) {
+		this.panneauCom = panneauCom;
+	}
 }
 	

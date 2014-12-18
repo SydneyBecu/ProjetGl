@@ -109,9 +109,9 @@ public class projetgl implements EntryPoint {
 	  
 	  //On rattache le mainLayout au rootPanel
 	  RootLayoutPanel.get().add(mainLayout);
-	  
+	  panneauMatrice.setPanneauCom(panneauCommentaires);
 	  panneauCommande.setPanneauMatrice(panneauMatrice);
-	 
+	  
 	  
   }
 }

@@ -9,6 +9,7 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.Overflow;
@@ -29,9 +30,9 @@ public class PanneauCommande extends VLayout {
 	// Un créateur de colonne 
 	CreateurColonne CreaCol= new CreateurColonne();
 	SuppresseurColonne supCol = new SuppresseurColonne();
-	// Des boutons pour masquer des lignes/colonnes.
-    SelectItem MasquerLigne = new SelectItem();  
-    SelectItem MasquerColonne = new SelectItem(); 
+	
+	IButton SupprLigne = new IButton("Supprimer ligne"); 
+
     //Bouton permettant de sauvegarder la matrice
     IButton Sauvegarder = new IButton("Sauver"); 
     //bouton permettant de charger une matrice
@@ -72,11 +73,30 @@ public class PanneauCommande extends VLayout {
         }  
     });  
     
-    
+    SupprLigne.addClickHandler(new ClickHandler() {  
+        public void onClick(ClickEvent event) {  
+            final Dialog dialogProperties = new Dialog();  
+            dialogProperties.setWidth(300);  
+            SC.askforValue("Numéro de ligne à supprimer", "Numéro", "", new ValueCallback() {  
+                  
+                public void execute(String value) {  
+                    if (value != null) {  
+                    	int numero = Integer.parseInt(value);
+                    	if(panneauMatrice.Grid.getRecord(numero-1)!=null){
+                    		panneauMatrice.Grid.removeRecordClick(numero-1);
+                    		panneauMatrice.panneauCom.supprimerLigne(numero-1);
+                    	}
+                    } else {  
+                        labelAnswer.setContents("Cancel");  
+                    }  
+                }  
+            }, dialogProperties);  
+        }  
+    });  
     
 	
     this.addMember(AjoutLigne);
-    
+    this.addMember(SupprLigne);
     //supCol.setPanneaumatrice(panneauMatrice);
     
     //On rajoute le créateur de colonne
@@ -86,23 +106,6 @@ public class PanneauCommande extends VLayout {
     this.addMember(supCol);
 
     CreaCol.setSuppresseur(supCol);
-    
-   // Multi select pour Masquer
-    
-    DynamicForm formMasq = new DynamicForm();
-
-    MasquerLigne.setTitle("Masquer ligne");  
-    MasquerLigne.setMultiple(true);  
-    MasquerLigne.setMultipleAppearance(MultipleAppearance.PICKLIST);  
-    MasquerLigne.setValueMap("Cat", "Dog", "Giraffe", "Goat", "Marmoset", "Mouse");  
-
-    MasquerColonne.setTitle("Masquer colonne");  
-    MasquerColonne.setMultiple(true);  
-    MasquerColonne.setMultipleAppearance(MultipleAppearance.PICKLIST);  
-    MasquerColonne.setValueMap("Cat", "Dog", "Giraffe", "Goat", "y", "Mouse");
-    
-    formMasq.setItems(MasquerLigne,MasquerColonne);
-    this.addMember(formMasq);
     
     //Boutons Sauvegarder/Charger A changer en trouvant comment appeler un file system
     
@@ -138,34 +141,6 @@ public class PanneauCommande extends VLayout {
 	public void setSupCol(SuppresseurColonne supCol) {
 		this.supCol = supCol;
 		
-	}
-
-
-
-
-	public SelectItem getMasquerLigne() {
-		return MasquerLigne;
-	}
-
-
-
-
-	public void setMasquerLigne(SelectItem masquerLigne) {
-		MasquerLigne = masquerLigne;
-	}
-
-
-
-
-	public SelectItem getMasquerColonne() {
-		return MasquerColonne;
-	}
-
-
-
-
-	public void setMasquerColonne(SelectItem masquerColonne) {
-		MasquerColonne = masquerColonne;
 	}
 
    

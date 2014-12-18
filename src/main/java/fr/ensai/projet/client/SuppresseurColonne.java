@@ -24,11 +24,11 @@ import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 public class SuppresseurColonne extends HLayout {
-	ComboBoxItem Suppression = new ComboBoxItem();
+	static ComboBoxItem Suppression = new ComboBoxItem();
 	IButton Valider = new IButton("Valider"); 
 	final Label labelAnswer = new Label("Your answer here");
-	PanneauMatrice panneaumatrice;
-	String[] nomsColonnes = new String[100];
+	static PanneauMatrice panneaumatrice;
+	static String[] nomsColonnes = new String[100];
     public PanneauMatrice getPanneaumatrice() {
 		return panneaumatrice;
 	}
@@ -53,6 +53,8 @@ public class SuppresseurColonne extends HLayout {
                     if (value != null && value) {  
                     	Window.alert("entree");
                     	panneaumatrice.supprimerField((String) Suppression.getValue());
+                    	
+                    	MAJListeCol();
                         labelAnswer.setContents("OK");  
                     } else {  
                         labelAnswer.setContents("Cancel");  
@@ -72,19 +74,19 @@ public class SuppresseurColonne extends HLayout {
 
 }
 	
-	private int nombreCol(){
+	private static int nombreCol(){
 		return panneaumatrice.Grid.getFields().length;
 	}
 	public void MAJListeCol(){
-
 		int nombre= nombreCol();
-
-		for (int i=0;i<nombre-2;i++){
-
-			String nomCol=panneaumatrice.Grid.getFields()[i+2].getName();
+		nomsColonnes= new String[nombre];		
+		for (int i=0;i<nombre;i++){
+			if(panneaumatrice.Grid.getFieldName(i)!="$61b" && panneaumatrice.Grid.getFieldName(i)!="$74y"){				
+			String nomCol=panneaumatrice.Grid.getFields()[i].getName();
 			nomsColonnes[i]=nomCol;
 
-		}
+		}}
 		Suppression.setValueMap(nomsColonnes);
 	}
+	
 }
