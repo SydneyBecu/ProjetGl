@@ -20,16 +20,23 @@ import com.smartgwt.client.widgets.Label;
 
 
 public class PanneauCommande extends VLayout {
+	//Largeur du panneau
 	private final static int LARGEUR=300;
+	
 	final Label labelAnswer = new Label("Your answer here");
+	//Bouton permettant d'ajouter une ligne
 	IButton AjoutLigne = new IButton("Ajouter une ligne"); 
+	// Un créateur de colonne 
 	CreateurColonne CreaCol= new CreateurColonne();
-	SuppresseurLigne supLigne = new SuppresseurLigne();
 	SuppresseurColonne supCol = new SuppresseurColonne();
+	// Des boutons pour masquer des lignes/colonnes.
     SelectItem MasquerLigne = new SelectItem();  
-    SelectItem MasquerColonne = new SelectItem();  
+    SelectItem MasquerColonne = new SelectItem(); 
+    //Bouton permettant de sauvegarder la matrice
     IButton Sauvegarder = new IButton("Sauver"); 
+    //bouton permettant de charger une matrice
     IButton Charger = new IButton("Charger"); 
+    // Le panneau matrice qui contient le pcm
 	PanneauMatrice panneauMatrice;
 
     
@@ -37,18 +44,20 @@ public class PanneauCommande extends VLayout {
 
 	PanneauCommande(){
 		super();
+		//Paramètres du panneau
 		this.setWidth(LARGEUR);
 		this.setShowEdges(true);
 		this.setBackgroundColor("#C3D9FF");
 		this.setShowResizeBar(true);
-		this.setResizeBarTarget("next");	
+		this.setResizeBarTarget("next");
+		/*
 		Label panneau = new Label();
 		panneau.setContents("Panneau de commande");
 		panneau.setAlign(Alignment.CENTER);
 		
 		this.addMember(panneau);
 		
-		
+		*/
 	
 	
 	
@@ -67,11 +76,16 @@ public class PanneauCommande extends VLayout {
     
 	
     this.addMember(AjoutLigne);
-    CreaCol.setPanneauMatrice(panneauMatrice);
+    
+    //supCol.setPanneaumatrice(panneauMatrice);
+    
+    //On rajoute le créateur de colonne
+    //CreaCol.setPanneauMatrice(panneauMatrice);
+
     this.addMember(CreaCol);
-    supLigne.setPanneauMatrice(panneauMatrice);
-    this.addMember(supLigne);
     this.addMember(supCol);
+
+    CreaCol.setSuppresseur(supCol);
     
    // Multi select pour Masquer
     
@@ -100,7 +114,7 @@ public class PanneauCommande extends VLayout {
 	
 	
 	
-	
+	// Getters and setters
 	public CreateurColonne getCreaCol() {
 		return CreaCol;
 	}
@@ -114,23 +128,6 @@ public class PanneauCommande extends VLayout {
 
 
 
-
-	public SuppresseurLigne getSupLigne() {
-		return supLigne;
-	}
-
-
-
-
-	public void setSupLigne(SuppresseurLigne supLigne) {
-		this.getSupLigne().setPanneauMatrice(panneauMatrice);
-
-		this.supLigne = supLigne;
-	}
-
-
-
-
 	public SuppresseurColonne getSupCol() {
 		return supCol;
 	}
@@ -140,6 +137,7 @@ public class PanneauCommande extends VLayout {
 
 	public void setSupCol(SuppresseurColonne supCol) {
 		this.supCol = supCol;
+		
 	}
 
 
@@ -170,13 +168,7 @@ public class PanneauCommande extends VLayout {
 		MasquerColonne = masquerColonne;
 	}
 
-
-
-
-    
-    
-    
-    
+   
     public PanneauMatrice getPanneauMatrice() {
 		return panneauMatrice;
 	}
@@ -187,6 +179,7 @@ public class PanneauCommande extends VLayout {
 	public void setPanneauMatrice(PanneauMatrice panneauMatrice) {
 		this.panneauMatrice = panneauMatrice;
 		this.getCreaCol().setPanneauMatrice(panneauMatrice);
+		this.getSupCol().setPanneaumatrice(panneauMatrice);
 	}
 
 

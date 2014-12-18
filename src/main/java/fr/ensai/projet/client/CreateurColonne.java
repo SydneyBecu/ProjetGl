@@ -19,10 +19,20 @@ public class CreateurColonne extends HLayout {
 		IButton NomCol = new IButton("NomColonne"); 
 		final Label labelAnswer = new Label("Your answer here");
 	    PanneauMatrice panneauMatrice;
-
+	    SuppresseurColonne suppresseur;
 	
 	    public PanneauMatrice getPanneauMatrice() {
 			return panneauMatrice;
+		}
+
+
+		public SuppresseurColonne getSuppresseur() {
+			return suppresseur;
+		}
+
+
+		public void setSuppresseur(SuppresseurColonne suppresseur) {
+			this.suppresseur = suppresseur;
 		}
 
 
@@ -38,7 +48,7 @@ public class CreateurColonne extends HLayout {
 	    Type.setTitle("Créer une colonne");  
 	    Type.setType("comboBox");  
 	    Type.setValueMap("Numérique", "Booléen","Texte");  
-	
+	    
 	    	
 	    formSupp.setFields(Type);
 	    
@@ -70,7 +80,9 @@ public class CreateurColonne extends HLayout {
 
 	                            labelAnswer.setContents("Cancel");  
 	                        }  
-	                    }  
+	                        suppresseur.MAJListeCol();
+	                    }
+	                    
 	                }, dialogProperties);  
 	            }  
 	        });  

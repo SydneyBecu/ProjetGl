@@ -1,5 +1,8 @@
 package fr.ensai.projet.client;
 
+import java.util.ArrayList;
+
+import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.util.BooleanCallback;  
@@ -24,16 +27,22 @@ public class SuppresseurColonne extends HLayout {
 	ComboBoxItem Suppression = new ComboBoxItem();
 	IButton Valider = new IButton("Valider"); 
 	final Label labelAnswer = new Label("Your answer here");
+	PanneauMatrice panneaumatrice;
+	String[] nomsColonnes = new String[100];
+    public PanneauMatrice getPanneaumatrice() {
+		return panneaumatrice;
+	}
 
+	public void setPanneaumatrice(PanneauMatrice panneaumatrice) {
+		this.panneaumatrice = panneaumatrice;
+	}
 
-    public SuppresseurColonne(){
+	public SuppresseurColonne(){
     //Boutons déroulants pour suppression de ligne et de colonne.
     
     DynamicForm formSupp = new DynamicForm();
     Suppression.setTitle("Supprimer cette colonne");  
     Suppression.setType("comboBox");  
-    Suppression.setValueMap("Yolo", "Swag");  
-
     	
     formSupp.setFields(Suppression);
     
@@ -42,6 +51,8 @@ public class SuppresseurColonne extends HLayout {
             SC.confirm("Supprimer ces Colonnes?", new BooleanCallback() {  
                 public void execute(Boolean value) {  
                     if (value != null && value) {  
+                    	Window.alert("entree");
+                    	panneaumatrice.supprimerField((String) Suppression.getValue());
                         labelAnswer.setContents("OK");  
                     } else {  
                         labelAnswer.setContents("Cancel");  
@@ -60,4 +71,20 @@ public class SuppresseurColonne extends HLayout {
 
 
 }
+	
+	private int nombreCol(){
+		return panneaumatrice.Grid.getFields().length;
+	}
+	public void MAJListeCol(){
+
+		int nombre= nombreCol();
+
+		for (int i=0;i<nombre-2;i++){
+
+			String nomCol=panneaumatrice.Grid.getFields()[i+2].getName();
+			nomsColonnes[i]=nomCol;
+
+		}
+		Suppression.setValueMap(nomsColonnes);
+	}
 }
