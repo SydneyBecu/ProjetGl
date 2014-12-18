@@ -58,6 +58,8 @@ public class NomAuteur extends HLayout {
 	
 	  
 	  //On rajoute les boutons:
+	  
+	  //Bouton permettant d'ajouter le nom
 	 IButton boutonNom = new IButton("Entrer nom");  
      boutonNom.setLeft(300);  
      boutonNom.addClickHandler(new ClickHandler() {  
@@ -70,7 +72,7 @@ public class NomAuteur extends HLayout {
                      if (value != null) {  
                          labelAnswer.setContents(value); 
                          Nom  = value ;
-                         nom.setContents("<html><body><font color='#C3D9FF'>Nom de la matrice:    <b> "+Nom + "</b> </body></html>");
+                         nom.setContents("<html><body>Nom de la matrice:    <b> "+Nom + "</b> </body></html>");
                      } else {  
                          labelAnswer.setContents("Cancel");  
                      }  
@@ -79,6 +81,7 @@ public class NomAuteur extends HLayout {
          }  
      });  
      
+     //Bouton permettant d'ajouter l'auteur
      IButton boutonAuteur = new IButton("Entrer Auteur");  
      boutonAuteur.setLeft(300);  
      boutonAuteur.addClickHandler(new ClickHandler() {  

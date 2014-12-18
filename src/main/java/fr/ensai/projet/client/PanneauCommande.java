@@ -42,7 +42,7 @@ public class PanneauCommande extends VLayout {
 
     
 
-
+	//Constructeur du panneauCommande
 	PanneauCommande(){
 		super();
 		//Paramètres du panneau
@@ -73,6 +73,7 @@ public class PanneauCommande extends VLayout {
         }  
     });  
     
+    //Boutons permettant de supprimer une ligne
     SupprLigne.addClickHandler(new ClickHandler() {  
         public void onClick(ClickEvent event) {  
             final Dialog dialogProperties = new Dialog();  
@@ -94,7 +95,7 @@ public class PanneauCommande extends VLayout {
         }  
     });  
     
-	
+	//On ajoute les éléments au panneau
     this.addMember(AjoutLigne);
     this.addMember(SupprLigne);
     //supCol.setPanneaumatrice(panneauMatrice);

@@ -54,7 +54,7 @@ public class projetgl implements EntryPoint {
   private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
 
   private final Messages messages = GWT.create(Messages.class);
-
+  // Différents panneaux sur lesquels on placera les éléments
   private HLayout mainLayout;
   private VLayout layoutDroit;
   private NomAuteur layoutNomAuteur;
@@ -64,6 +64,7 @@ public class projetgl implements EntryPoint {
   /**
    * This is the entry point method.
    */
+  //Méthode appelée au démarrage de l'application
   public void onModuleLoad() {
 	  if (!GWT.isScript()) { 
 		    KeyIdentifier debugKey = new KeyIdentifier(); 
@@ -109,6 +110,7 @@ public class projetgl implements EntryPoint {
 	  
 	  //On rattache le mainLayout au rootPanel
 	  RootLayoutPanel.get().add(mainLayout);
+	  //On attache des panneaux à d'autres
 	  panneauMatrice.setPanneauCom(panneauCommentaires);
 	  panneauCommande.setPanneauMatrice(panneauMatrice);
 	  

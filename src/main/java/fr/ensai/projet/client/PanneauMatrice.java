@@ -99,13 +99,13 @@ public class PanneauMatrice extends VLayout {
 	        Grid.setAutoFetchData(true);
 	        Grid.setShowFilterEditor(true);
 	        //On ajoute la matrice au panneau
-	        
+	        //Le click droit sert à entrer un commentaire pour la cellule concernée
 	        Grid.addCellContextClickHandler(new CellContextClickHandler() {
 				
 				public void onCellContextClick(CellContextClickEvent event) {
 					final Dialog dialogProperties = new Dialog();  
 		             dialogProperties.setWidth(300);  
-		             SC.askforValue("Nouveau nom", "Nom du PCM", "", new ValueCallback() {  
+		             SC.askforValue("Nouveau commentaire", "Lache ton com' !", "", new ValueCallback() {  
 		                   
 		                 public void execute(String value) {  
 		                     if (value != null) {  
@@ -122,24 +122,21 @@ public class PanneauMatrice extends VLayout {
 				}
 			});
 	        
+	        //Le click gauche simple permet d'afficher le commentaire de la cellule cliquée
 	        Grid.addCellClickHandler(new CellClickHandler() {
 				
 				public void onCellClick(CellClickEvent event) {
-					// TODO Auto-generated method stub
-					//Window.alert("entree simple click");
 					int [][] celluleChoisie = Grid.getCellSelection().getSelectedCells();
                	 int ligne = celluleChoisie[0][0];
-               	// Window.alert(""+ligne);
                	 int colonne =celluleChoisie[0][1];
-               	 //Window.alert(""+colonne);
 
                	 String com = panneauCom.recupererCommentaire(ligne, colonne);
-               	 //Window.alert(com);
                	 panneauCom.afficherCommentaire(com);
 				}
 			});
 	        
-	        
+	        //Bonton pour ajouter un commentaire à la matrice
+	        ajouterDesc.setWidth(300);
 	        ajouterDesc.addClickHandler(new ClickHandler() {  
 	            public void onClick(ClickEvent event) {  
 	                final Dialog dialogProperties = new Dialog();  
@@ -160,7 +157,7 @@ public class PanneauMatrice extends VLayout {
 	        });  
 	        
 	        
-	        
+	        //On rattache les objets au panneau
 	        this.addMember(Grid);
 	        this.addMember(ajouterDesc);
 
@@ -277,6 +274,7 @@ public class PanneauMatrice extends VLayout {
 		this.addMember(Grid);
 	}
 	
+	// Getters/Setters pour le panneau commentaire
 	public PanneauCommentaires getPanneauCom() {
 		return panneauCom;
 	}

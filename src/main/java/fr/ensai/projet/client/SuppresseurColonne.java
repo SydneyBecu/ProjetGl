@@ -51,9 +51,8 @@ public class SuppresseurColonne extends HLayout {
             SC.confirm("Supprimer ces Colonnes?", new BooleanCallback() {  
                 public void execute(Boolean value) {  
                     if (value != null && value) {  
-                    	Window.alert("entree");
                     	panneaumatrice.supprimerField((String) Suppression.getValue());
-                    	
+                    	//On met à jour les colonnes encore disponibles
                     	MAJListeCol();
                         labelAnswer.setContents("OK");  
                     } else {  
@@ -66,21 +65,23 @@ public class SuppresseurColonne extends HLayout {
     
      
     
-
+    //On attache les boutons au panneau
     this.addMember(formSupp);
     this.addMember(Valider);
     
 
 
 }
-	
+	//Retourne le nombre de colonnes
 	private static int nombreCol(){
 		return panneaumatrice.Grid.getFields().length;
 	}
+	//Fonction qui met à jour le nombre de colonnes 
 	public void MAJListeCol(){
 		int nombre= nombreCol();
 		nomsColonnes= new String[nombre];		
 		for (int i=0;i<nombre;i++){
+			//On enlève les colonnes index et suppression
 			if(panneaumatrice.Grid.getFieldName(i)!="$61b" && panneaumatrice.Grid.getFieldName(i)!="$74y"){				
 			String nomCol=panneaumatrice.Grid.getFields()[i].getName();
 			nomsColonnes[i]=nomCol;

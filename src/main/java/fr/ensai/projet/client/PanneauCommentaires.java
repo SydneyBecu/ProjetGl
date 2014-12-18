@@ -24,7 +24,7 @@ public class PanneauCommentaires extends VLayout {
 	this.setWidth100();
 	this.setShowEdges(true);
 
-
+	//On ajoute les Labels aux panneau
 	this.addMember(descriptionLab);
 	this.addMember(descriptionCell);
 	
@@ -47,10 +47,7 @@ public class PanneauCommentaires extends VLayout {
 		return com;
 	}
 	
-	public void afficherComm(int ligne, int colonne){
-		Window.alert(matriceCom[ligne][colonne]);
-	}
-	
+	// Permet de supprimer une ligne dans la matrice de commentaires
 	public void supprimerLigne(int ligne){
 		for(int j= 0;j<100;j++){
 			for(int i=ligne;i<99;i++){
@@ -61,7 +58,7 @@ public class PanneauCommentaires extends VLayout {
 			
 		}
 	
-	
+	//Permet de supprimer une colonne dans la matrice de commentaires
 	public void supprimerCol(int Col){
 		for(int i= 0;i<100;i++){
 			for(int j=Col;j<99;j++){
