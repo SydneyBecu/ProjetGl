@@ -109,7 +109,14 @@ public class PanneauCommande extends VLayout {
     CreaCol.setSuppresseur(supCol);
     
     //Boutons Sauvegarder/Charger A changer en trouvant comment appeler un file system
-    
+    Sauvegarder.setLeft(300);  
+    Sauvegarder.addClickHandler(new ClickHandler() {  
+        public void onClick(ClickEvent event) {  
+             
+            panneauMatrice.exportGridXML();;
+            
+        }  
+    });  
     this.addMember(Sauvegarder);
     this.addMember(Charger);
 

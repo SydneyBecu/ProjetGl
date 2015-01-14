@@ -1,12 +1,22 @@
 package fr.ensai.projet.client;
 
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.SelectionStyle;
@@ -51,6 +61,7 @@ public class PanneauMatrice extends VLayout {
 	// Le constructeur
 	public PanneauMatrice(){
 		super();
+		
 		//On définit la hauteur, la largeur et le fait que l'on voie les bords
 		this.setHeight(Hauteur);
 		this.setWidth100();
@@ -155,6 +166,7 @@ public class PanneauMatrice extends VLayout {
 	                    }}, dialogProperties);  
 	            }  
 	        });  
+	        
 	        
 	        
 	        //On rattache les objets au panneau
@@ -282,5 +294,64 @@ public class PanneauMatrice extends VLayout {
 	public void setPanneauCom(PanneauCommentaires panneauCom) {
 		this.panneauCom = panneauCom;
 	}
+	
+	public void exportGridXML(){
+		 Window.alert("Entree");
+		
+		RecordList records = Grid.getRecordList();
+
+	    Document doc = XMLParser.createDocument();
+	    Element rootElement = doc.createElement("ROOT");
+	    doc.appendChild(rootElement);
+
+	    for (int i = 0; i < records.getLength(); i++) {
+
+	        Record rec = records.get(i);
+	        Element row = doc.createElement("ROW");
+
+	        for (String str : rec.getAttributes()) {
+
+
+	            String propertyVal = rec.getAttributeAsString(str);
+
+	                if (propertyVal != null && propertyVal.equalsIgnoreCase("") != true) {
+	                    Element columnElement = doc.createElement(str.toUpperCase());
+	                    columnElement.appendChild(doc.createTextNode(propertyVal));
+	                    row.appendChild(columnElement);
+	                }
+	            }
+	        rootElement.appendChild(row);
+	    }
+	    Window.alert("avant xml");
+	          Window.alert(" " + doc.toString());
+	          Window.alert("avant async");
+	      	EssaiSauvegardeAsync essai = (EssaiSauvegardeAsync) GWT.create(EssaiSauvegarde.class);
+	      	 Window.alert("avant callback");
+	          AsyncCallback callback = new AsyncCallback() {
+	        	    /*public void onSuccess(Void result) {
+	        	      Window.alert("le callback a marche");
+	        	    }
+					*/
+	        	    public void onFailure(Throwable caught) {
+	        	    	Window.alert("le callback a pas marche");
+	        	    	Window.alert(caught.toString());
+	        	    	Window.alert("passe le caught");
+
+	        	    	 }
+
+					public void onSuccess(Object arg0) {
+						Window.alert("le callback a marche");
+						
+					}
+	        	  };
+
+	        	  // (3) Make the call. Control flow will continue immediately and later
+	        	  // 'callback' will be invoked when the RPC completes.
+	        	  //
+	        	  essai.sauvegarde(doc.toString(), callback);
+	          
+	}
+	
+	
 }
 	

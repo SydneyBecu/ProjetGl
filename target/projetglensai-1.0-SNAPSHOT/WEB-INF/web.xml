@@ -10,10 +10,18 @@
     <servlet-name>greetServlet</servlet-name>
     <servlet-class>fr.ensai.projet.server.GreetingServiceImpl</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>sauvServlet</servlet-name>
+    <servlet-class>fr.ensai.projet.server.EssaiSauvegardeImpl</servlet-class>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/projetgl/greet</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>sauvServlet</servlet-name>
+    <url-pattern>/projetgl/EssaiSauvegarde</url-pattern>
   </servlet-mapping>
 
   <!-- Default page to serve -->
