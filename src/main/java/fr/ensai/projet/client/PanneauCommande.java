@@ -113,7 +113,7 @@ public class PanneauCommande extends VLayout {
     Sauvegarder.addClickHandler(new ClickHandler() {  
         public void onClick(ClickEvent event) {  
              
-            panneauMatrice.exportGridXML();;
+            panneauMatrice.GridToXML();
             
         }  
     });  

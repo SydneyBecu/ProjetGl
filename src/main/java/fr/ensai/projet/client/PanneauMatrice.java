@@ -1,6 +1,5 @@
 package fr.ensai.projet.client;
 
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dev.protobuf.Descriptors.FieldDescriptor.Type;
+import com.google.gwt.dev.protobuf.WireFormat.FieldType;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -50,242 +51,251 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 public class PanneauMatrice extends VLayout {
 	// Hauteur du panneau contenant la matrice.
-	private final static int Hauteur=400;
-	
+	private final static int Hauteur = 400;
+
 	PanneauCommentaires panneauCom;
 	
 	IButton ajouterDesc = new IButton("Ajouter Description");
-
+	String auteur;
+	String nomPCM;
 	// La matrice
 	ListGrid Grid = new ListGrid();
+
 	// Le constructeur
-	public PanneauMatrice(){
+	public PanneauMatrice() {
 		super();
-		
-		//On définit la hauteur, la largeur et le fait que l'on voie les bords
+
+		// On définit la hauteur, la largeur et le fait que l'on voie les bords
 		this.setHeight(Hauteur);
 		this.setWidth100();
 		this.setShowEdges(true);
-		
-		/*Label panneau = new Label();
-		panneau.setContents("Emplacement de la matrice");
-		panneau.setAlign(Alignment.CENTER);
-		
-		
-		this.addMember(panneau);
-		*/
-		
+
+		/*
+		 * Label panneau = new Label();
+		 * panneau.setContents("Emplacement de la matrice");
+		 * panneau.setAlign(Alignment.CENTER);
+		 * 
+		 * 
+		 * this.addMember(panneau);
+		 */
+
 		// Dimensions de la matrice
-	     	Grid.setWidth(500);  
-	        Grid.setHeight(224);  
-	        Grid.setTop(50); 
-	        
-	    // Fait que l'on voie toutes les lignes
-	        Grid.setShowAllRecords(true); 
-	    // Message lorsque la matrice est vide    
-	        Grid.setShowEmptyMessage(true);  
-	        
-	       // Grid.setAlternateRecordStyles(true);
-	    //Fait que l'on puisse supprimer une ligne    
-	       // Grid.setCanRemoveRecords(true);
-	        Grid.setWarnOnRemoval(true);
-	        /*
-	        Grid.setEmptyMessage("Ajoutez des lignes ou des colonnes");
-	        ListGridField Nom = new ListGridField("Bière");
-	        ListGridField Prix = new ListGridField("Prix");
-	        ListGridField Qualité = new ListGridField("Qualité");
-	        
-	        Grid.setFields(Nom,Prix,Qualité);
-	        */	       
-	        
-	        Grid.setCanSelectCells(true);
-	        // Affichage du contenu lorsque l'on passe sur l'élément
-	        Grid.setCanHover(true);
-	        // On peut sélectionner tous les éléments
-	        Grid.setCanSelectAll(true);
-	        //Grid.setShowRollOver(true);
-	        // Affichage du numéo des lignes.
-	        Grid.setShowRowNumbers(true);
-	        //Filtre
-	        Grid.setAutoFetchData(true);
-	        Grid.setShowFilterEditor(true);
-	        //On ajoute la matrice au panneau
-	        //Le click droit sert à entrer un commentaire pour la cellule concernée
-	        Grid.addCellContextClickHandler(new CellContextClickHandler() {
-				
-				public void onCellContextClick(CellContextClickEvent event) {
-					final Dialog dialogProperties = new Dialog();  
-		             dialogProperties.setWidth(300);  
-		             SC.askforValue("Nouveau commentaire", "Lache ton com' !", "", new ValueCallback() {  
-		                   
-		                 public void execute(String value) {  
-		                     if (value != null) {  
-		                    	 int [][] celluleChoisie = Grid.getCellSelection().getSelectedCells();
-		                    	 int ligne = celluleChoisie[0][0];
-		                    	 int colonne =celluleChoisie[0][1];
-		                    	 panneauCom.ajouterCommentaire(ligne, colonne, value);
-		                    	 //panneauCom.afficherComm(ligne, colonne);
-		                     } else {  
-		                     }  
-		                 }  
-		             }, dialogProperties);  
-					
-				}
-			});
-	        
-	        //Le click gauche simple permet d'afficher le commentaire de la cellule cliquée
-	        Grid.addCellClickHandler(new CellClickHandler() {
-				
-				public void onCellClick(CellClickEvent event) {
-					int [][] celluleChoisie = Grid.getCellSelection().getSelectedCells();
-               	 int ligne = celluleChoisie[0][0];
-               	 int colonne =celluleChoisie[0][1];
+		Grid.setWidth(500);
+		Grid.setHeight(224);
+		Grid.setTop(50);
 
-               	 String com = panneauCom.recupererCommentaire(ligne, colonne);
-               	 panneauCom.afficherCommentaire(com);
-				}
-			});
-	        
-	        //Bonton pour ajouter un commentaire à la matrice
-	        ajouterDesc.setWidth(300);
-	        ajouterDesc.addClickHandler(new ClickHandler() {  
-	            public void onClick(ClickEvent event) {  
-	                final Dialog dialogProperties = new Dialog();  
-	                dialogProperties.setWidth(300);  
-	                SC.askforValue("Description de la PCM", "Entrer description", "", new ValueCallback() {  
-	                      
-	                    public void execute(String value) {  
-	                        if (value != null) {  
-	                        	panneauCom.descriptionLab.setContents("Description de la matrice : <b>" +value + "</b>");
-	                        	
-	                        } else {  
-	                            Label labelAnswer =new Label();
-								labelAnswer.setContents("Cancel");  
-	                        }  
-	                    
-	                    }}, dialogProperties);  
-	            }  
-	        });  
-	        
-	        
-	        
-	        //On rattache les objets au panneau
-	        this.addMember(Grid);
-	        this.addMember(ajouterDesc);
+		// Fait que l'on voie toutes les lignes
+		Grid.setShowAllRecords(true);
+		// Message lorsque la matrice est vide
+		Grid.setShowEmptyMessage(true);
 
-	       	}
-	
-			
-	
-	//Récupérer le nom des colonnes
-	public ArrayList<String> recupHeadersCol(){
-	ArrayList<String> liste = new ArrayList<String>();
-	for (int i=0;i<Grid.getFields().length;i++){
-	liste.add(Grid.getFieldName(i));
+		// Grid.setAlternateRecordStyles(true);
+		// Fait que l'on puisse supprimer une ligne
+		// Grid.setCanRemoveRecords(true);
+		Grid.setWarnOnRemoval(true);
+		/*
+		 * Grid.setEmptyMessage("Ajoutez des lignes ou des colonnes");
+		 * ListGridField Nom = new ListGridField("Bière"); ListGridField Prix =
+		 * new ListGridField("Prix"); ListGridField Qualité = new
+		 * ListGridField("Qualité");
+		 * 
+		 * Grid.setFields(Nom,Prix,Qualité);
+		 */
+
+		Grid.setCanSelectCells(true);
+		// Affichage du contenu lorsque l'on passe sur l'élément
+		Grid.setCanHover(true);
+		// On peut sélectionner tous les éléments
+		Grid.setCanSelectAll(true);
+		// Grid.setShowRollOver(true);
+		// Affichage du numéo des lignes.
+		Grid.setShowRowNumbers(true);
+		// Filtre
+		Grid.setAutoFetchData(true);
+		Grid.setShowFilterEditor(true);
+		// On ajoute la matrice au panneau
+		// Le click droit sert à entrer un commentaire pour la cellule concernée
+		Grid.addCellContextClickHandler(new CellContextClickHandler() {
+
+			public void onCellContextClick(CellContextClickEvent event) {
+				final Dialog dialogProperties = new Dialog();
+				dialogProperties.setWidth(300);
+				SC.askforValue("Nouveau commentaire", "Lache ton com' !", "",
+						new ValueCallback() {
+
+							public void execute(String value) {
+								if (value != null) {
+									int[][] celluleChoisie = Grid
+											.getCellSelection()
+											.getSelectedCells();
+									int ligne = celluleChoisie[0][0];
+									int colonne = celluleChoisie[0][1];
+									panneauCom.ajouterCommentaire(ligne,
+											colonne, value);
+									// panneauCom.afficherComm(ligne, colonne);
+								} else {
+								}
+							}
+						}, dialogProperties);
+
+			}
+		});
+
+		// Le click gauche simple permet d'afficher le commentaire de la cellule
+		// cliquée
+		Grid.addCellClickHandler(new CellClickHandler() {
+
+			public void onCellClick(CellClickEvent event) {
+				int[][] celluleChoisie = Grid.getCellSelection()
+						.getSelectedCells();
+				int ligne = celluleChoisie[0][0];
+				int colonne = celluleChoisie[0][1];
+
+				String com = panneauCom.recupererCommentaire(ligne, colonne);
+				panneauCom.afficherCommentaire(com);
+			}
+		});
+
+		// Bonton pour ajouter un commentaire à la matrice
+		ajouterDesc.setWidth(300);
+		ajouterDesc.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				final Dialog dialogProperties = new Dialog();
+				dialogProperties.setWidth(300);
+				SC.askforValue("Description de la PCM", "Entrer description",
+						"", new ValueCallback() {
+
+							public void execute(String value) {
+								if (value != null) {
+									panneauCom.descriptionLab
+											.setContents("Description de la matrice : <b>"
+													+ value + "</b>");
+
+								} else {
+									Label labelAnswer = new Label();
+									labelAnswer.setContents("Cancel");
+								}
+
+							}
+						}, dialogProperties);
+			}
+		});
+
+		// On rattache les objets au panneau
+		this.addMember(Grid);
+		this.addMember(ajouterDesc);
+
 	}
-	return liste;
-		
+
+	// Récupérer le nom des colonnes
+	public ArrayList<String> recupHeadersCol() {
+		ArrayList<String> liste = new ArrayList<String>();
+		for (int i = 0; i < Grid.getFields().length; i++) {
+			liste.add(Grid.getFieldName(i));
+		}
+		return liste;
+
 	}
+
 	// Ajouter un élément à la liste des colonnes
-	public ArrayList<String> ajouterHeaderColString(String nouveauHeader){
+	public ArrayList<String> ajouterHeaderColString(String nouveauHeader) {
 		ArrayList<String> listeExist = recupHeadersCol();
 		listeExist.add(nouveauHeader);
-		
+
 		return listeExist;
 	}
-	
+
 	// Ajouter une colonne
-	public void ajouterHeaderCol(String nouveauHeader){
-		ArrayList<String> liste= ajouterHeaderColString(nouveauHeader);
+	public void ajouterHeaderCol(String nouveauHeader) {
+		ArrayList<String> liste = ajouterHeaderColString(nouveauHeader);
 		ListGridField[] listeFields = Grid.getFields();
-		int nombre=listeFields.length;
-		ListGridField[] liste2 = new ListGridField[nombre+1];
-		for(int i=0;i<nombre;i++){
-			liste2[i]=listeFields[i];
+		int nombre = listeFields.length;
+		ListGridField[] liste2 = new ListGridField[nombre + 1];
+		for (int i = 0; i < nombre; i++) {
+			liste2[i] = listeFields[i];
 		}
 		ListGridField nouveau = new ListGridField(nouveauHeader);
-		liste2[nombre]=nouveau;
+		liste2[nombre] = nouveau;
 		Grid.setFields(liste2);
-		
+
 	}
+
 	// Ajouter une colonne de type numérique
-	public void ajouterHeaderColNumerique(String nouveauHeader){
-		ArrayList<String> liste= ajouterHeaderColString(nouveauHeader);
+	public void ajouterHeaderColNumerique(String nouveauHeader) {
+		ArrayList<String> liste = ajouterHeaderColString(nouveauHeader);
 		ListGridField[] listeFields = Grid.getFields();
-		int nombre=listeFields.length;
-		ListGridField[] liste2 = new ListGridField[nombre+1];
-		for(int i=0;i<nombre;i++){
-			liste2[i]=listeFields[i];
+		int nombre = listeFields.length;
+		ListGridField[] liste2 = new ListGridField[nombre + 1];
+		for (int i = 0; i < nombre; i++) {
+			liste2[i] = listeFields[i];
 		}
 		ListGridField nouveau = new ListGridField(nouveauHeader);
 		nouveau.setType(ListGridFieldType.FLOAT);
-		liste2[nombre]=nouveau;
-		
-		
+		liste2[nombre] = nouveau;
+
 		Grid.setFields(liste2);
-		
+
 	}
-	
+
 	// Ajouter une colonne de type booléen
-	public void ajouterHeaderColBool(String nouveauHeader){
-		ArrayList<String> liste= ajouterHeaderColString(nouveauHeader);
+	public void ajouterHeaderColBool(String nouveauHeader) {
+		ArrayList<String> liste = ajouterHeaderColString(nouveauHeader);
 		ListGridField[] listeFields = Grid.getFields();
-		int nombre=listeFields.length;
-		ListGridField[] liste2 = new ListGridField[nombre+1];
-		for(int i=0;i<nombre;i++){
-			liste2[i]=listeFields[i];
+		int nombre = listeFields.length;
+		ListGridField[] liste2 = new ListGridField[nombre + 1];
+		for (int i = 0; i < nombre; i++) {
+			liste2[i] = listeFields[i];
 		}
 		ListGridField nouveau = new ListGridField(nouveauHeader);
 		nouveau.setType(ListGridFieldType.BOOLEAN);
-		liste2[nombre]=nouveau;
-		
-		
+		liste2[nombre] = nouveau;
+
 		Grid.setFields(liste2);
-		
+
 	}
-	
-	//Ajouter une ligne
-	public void ajouterLigne(){
+
+	// Ajouter une ligne
+	public void ajouterLigne() {
 		Grid.startEditingNew();
 	}
-	
-	//Permet de réinitialiser la matrice. 
-	public void reinitialiserMatrice(){
+
+	// Permet de réinitialiser la matrice.
+	public void reinitialiserMatrice() {
 		Grid = new ListGrid();
 	}
-	
-	//Permet de supprimer une colonne
-	public void supprimerField(String nom){
-		boolean indic = false;		
-		int nbcol=Grid.getAllFields().length;
-		int compteurNew = 0;		
-		//Liste des nouvelles colonnes
-		ListGridField[] listeNew = new ListGridField[nbcol-3];
-		
-		//Pour chaque colonne de la grille
-		for(int i=0;i<nbcol;i++){
-			//Pour les colonnes n'étant pas les index ou suppresseur de ligne
-			if(Grid.getFieldName(i)!="$61b" && Grid.getFieldName(i)!="$74y"){
-				
-				
-			if(Grid.getAllFields()[i].getName().equals(nom) && !indic){
-				indic = true;
-				panneauCom.supprimerCol(i);
 
-			}
-			
-			else{
-				ListGridField field = Grid.getAllFields()[i];
-				listeNew[compteurNew]=field;
-				compteurNew++;
+	// Permet de supprimer une colonne
+	public void supprimerField(String nom) {
+		boolean indic = false;
+		int nbcol = Grid.getAllFields().length;
+		int compteurNew = 0;
+		// Liste des nouvelles colonnes
+		ListGridField[] listeNew = new ListGridField[nbcol - 3];
 
-			}
+		// Pour chaque colonne de la grille
+		for (int i = 0; i < nbcol; i++) {
+			// Pour les colonnes n'étant pas les index ou suppresseur de ligne
+			if (Grid.getFieldName(i) != "$61b"
+					&& Grid.getFieldName(i) != "$74y") {
+
+				if (Grid.getAllFields()[i].getName().equals(nom) && !indic) {
+					indic = true;
+					panneauCom.supprimerCol(i);
+
+				}
+
+				else {
+					ListGridField field = Grid.getAllFields()[i];
+					listeNew[compteurNew] = field;
+					compteurNew++;
+
+				}
 			}
 		}
 		Grid.setFields(listeNew);
 		this.addMember(Grid);
 	}
-	
+
 	// Getters/Setters pour le panneau commentaire
 	public PanneauCommentaires getPanneauCom() {
 		return panneauCom;
@@ -294,64 +304,228 @@ public class PanneauMatrice extends VLayout {
 	public void setPanneauCom(PanneauCommentaires panneauCom) {
 		this.panneauCom = panneauCom;
 	}
-	
-	public void exportGridXML(){
-		 Window.alert("Entree");
+
+	public void GridToXML(){
+		Document doc = XMLParser.createDocument();
+		Element rootElement = doc.createElement("ROOT");
+		doc.appendChild(rootElement);
+		ListGridField[] listeCol= Grid.getFields();
+		int nbCol = listeCol.length;
+		RecordList records = Grid.getRecordList();
+		int nbLigne =records.getLength();
 		
+		Element Cellules = doc.createElement("Cellules");
+		
+		
+		for(int i=0;i<nbLigne;i++){
+			for(int j=1;j<nbCol;j++){
+				if(listeCol[j].getType().equals(ListGridFieldType.FLOAT)){
+					Element Cellule = doc.createElement("CelluleNumerique");
+					Element num_ligne_cellule = doc.createElement("Num_ligne_cellule");
+					num_ligne_cellule.appendChild(doc.createTextNode(""+(i+1)));
+					Element num_col_cellule = doc.createElement("Num_col_cellule");
+					num_col_cellule.appendChild(doc.createTextNode(""+j));
+					Element commentaire = doc.createElement("Num_commentaire_cellule");
+					commentaire.appendChild(doc.createTextNode(panneauCom.matriceCom[i][j]));
+					Element valeur_cellule = doc.createElement("Valeur_celluleNum");
+					//Window.alert(""+Grid.getEditedCell(i, j).getClass());
+					if(Grid.getEditedCell(i, j)!=null & (Grid.getEditedCell(i, j) instanceof Float||Grid.getEditedCell(i, j) instanceof Integer||Grid.getEditedCell(i, j) instanceof Double)){
+					valeur_cellule.appendChild(doc.createTextNode(""+Grid.getEditedCell(i, j)));
+					}
+					
+					else{
+						valeur_cellule.appendChild(doc.createTextNode(""));
+
+					}
+					Cellule.appendChild(num_ligne_cellule);
+					Cellule.appendChild(num_col_cellule);
+					Cellule.appendChild(commentaire);
+					Cellule.appendChild(valeur_cellule);
+					Cellules.appendChild(Cellule);
+				}
+				else if (listeCol[j].getType().equals(ListGridFieldType.BOOLEAN)){
+					Element Cellule = doc.createElement("CelluleBool");
+					Element num_ligne_cellule = doc.createElement("Num_ligne_cellule");
+					num_ligne_cellule.appendChild(doc.createTextNode(""+(i+1)));
+					Element num_col_cellule = doc.createElement("Num_col_cellule");
+					num_col_cellule.appendChild(doc.createTextNode(""+j));
+					Element commentaire = doc.createElement("Num_commentaire_cellule");
+					commentaire.appendChild(doc.createTextNode(panneauCom.matriceCom[i][j]));
+					Element valeur_cellule = doc.createElement("Valeur_celluleBool");
+					if(Grid.getEditedCell(i, j)!=null & Grid.getEditedCell(i, j) instanceof Boolean ){
+						valeur_cellule.appendChild(doc.createTextNode(""+Grid.getEditedCell(i, j)));
+						}
+						else{
+							valeur_cellule.appendChild(doc.createTextNode(""));
+
+						}
+					Cellule.appendChild(num_ligne_cellule);
+					Cellule.appendChild(num_col_cellule);
+					Cellule.appendChild(commentaire);
+					Cellule.appendChild(valeur_cellule);
+					Cellules.appendChild(Cellule);
+			}
+				else {
+					Element Cellule = doc.createElement("CelluleAutre");
+					Element num_ligne_cellule = doc.createElement("Num_ligne_cellule");
+					num_ligne_cellule.appendChild(doc.createTextNode(""+(i+1)));
+					Element num_col_cellule = doc.createElement("Num_col_cellule");
+					num_col_cellule.appendChild(doc.createTextNode(""+j));
+					Element commentaire = doc.createElement("Num_commentaire_cellule");
+					commentaire.appendChild(doc.createTextNode(panneauCom.matriceCom[i][j]));
+					Element valeur_cellule = doc.createElement("Valeur_celluleAutre");
+					valeur_cellule.appendChild(doc.createTextNode(""+Grid.getEditedCell(i, j)));
+					Cellule.appendChild(num_ligne_cellule);
+					Cellule.appendChild(num_col_cellule);
+					Cellule.appendChild(commentaire);
+					Cellule.appendChild(valeur_cellule);
+					Cellules.appendChild(Cellule);
+			}
+		}
+		}
+		Element Headers = doc.createElement("Headers");
+		for(int i=1;i<nbCol;i++){
+			Element Header = doc.createElement("Header");
+			Element nomHeader = doc.createElement("Nom_Header");
+			nomHeader.appendChild(doc.createTextNode(listeCol[i].getName()));
+			Element numColonne = doc.createElement("Num_col_Header");
+			numColonne.appendChild(doc.createTextNode(""+i));
+			Header.appendChild(nomHeader);
+			Header.appendChild(numColonne);
+			Headers.appendChild(Header);
+		}
+		rootElement.appendChild(Cellules);
+		rootElement.appendChild(Headers);
+		
+		Element nomPCM = doc.createElement("Nom");
+		if(!this.nomPCM.equals("undefined")){
+		nomPCM.appendChild(doc.createTextNode(this.nomPCM));
+		}
+		else{
+			nomPCM.appendChild(doc.createTextNode(""));
+		}
+		Element Auteur = doc.createElement("Auteur");
+		if(!this.auteur.equals("undefined")){
+		Auteur.appendChild(doc.createTextNode(this.auteur));
+		}
+		else{
+			Auteur.appendChild(doc.createTextNode(""));
+		}
+			
+		Element NumColonnes= doc.createElement("Nb_colonnes");
+		Element NumLignes = doc.createElement("Nb_lignes");
+		
+		NumColonnes.appendChild(doc.createTextNode(""+ (nbCol-1)));
+		NumLignes.appendChild(doc.createTextNode(""+nbLigne));
+		
+		rootElement.appendChild(nomPCM);
+		rootElement.appendChild(Auteur);
+		rootElement.appendChild(NumColonnes);
+		rootElement.appendChild(NumLignes);
+		Window.alert(doc.toString());
+		
+		EssaiSauvegardeAsync essai = (EssaiSauvegardeAsync) GWT
+				.create(EssaiSauvegarde.class);
+		// Window.alert("avant callback");
+		AsyncCallback callback = new AsyncCallback() {
+			/*
+			 * public void onSuccess(Void result) {
+			 * Window.alert("le callback a marche"); }
+			 */
+			public void onFailure(Throwable caught) {
+				Window.alert("le callback a pas marche");
+				Window.alert(caught.toString());
+				Window.alert("passe le caught");
+
+			}
+
+			public void onSuccess(Object arg0) {
+				// Window.alert("le callback a marche");
+				Window.alert((String)arg0 );
+			}
+		};
+
+		// (3) Make the call. Control flow will continue immediately and later
+		// 'callback' will be invoked when the RPC completes.
+		//
+		essai.sauvegarde(doc.toString(), callback);
+
+		
+	}
+
+	public void exportGridXML() {
+		// Window.alert("Entree");
+
 		RecordList records = Grid.getRecordList();
 
-	    Document doc = XMLParser.createDocument();
-	    Element rootElement = doc.createElement("ROOT");
-	    doc.appendChild(rootElement);
+		Document doc = XMLParser.createDocument();
+		Element rootElement = doc.createElement("ROOT");
+		doc.appendChild(rootElement);
 
-	    for (int i = 0; i < records.getLength(); i++) {
+		for (int i = 0; i < records.getLength(); i++) {
+			// i numéro de la ligne
+			Record rec = records.get(i);
+			Element row = doc.createElement("ROW");
 
-	        Record rec = records.get(i);
-	        Element row = doc.createElement("ROW");
+			for (String str : rec.getAttributes()) {
 
-	        for (String str : rec.getAttributes()) {
+				String propertyVal = rec.getAttributeAsString(str);
 
+				if (propertyVal != null
+						&& propertyVal.equalsIgnoreCase("") != true) {
+					Element columnElement = doc
+							.createElement(str.toUpperCase());
+					columnElement.appendChild(doc.createTextNode(propertyVal));
+					row.appendChild(columnElement);
+				}
+			}
+			rootElement.appendChild(row);
+		}
+		// Window.alert("avant xml");
+		// Window.alert(" " + doc.toString());
+		// Window.alert("avant async");
+		EssaiSauvegardeAsync essai = (EssaiSauvegardeAsync) GWT
+				.create(EssaiSauvegarde.class);
+		// Window.alert("avant callback");
+		AsyncCallback callback = new AsyncCallback() {
+			/*
+			 * public void onSuccess(Void result) {
+			 * Window.alert("le callback a marche"); }
+			 */
+			public void onFailure(Throwable caught) {
+				Window.alert("le callback a pas marche");
+				Window.alert(caught.toString());
+				Window.alert("passe le caught");
 
-	            String propertyVal = rec.getAttributeAsString(str);
+			}
 
-	                if (propertyVal != null && propertyVal.equalsIgnoreCase("") != true) {
-	                    Element columnElement = doc.createElement(str.toUpperCase());
-	                    columnElement.appendChild(doc.createTextNode(propertyVal));
-	                    row.appendChild(columnElement);
-	                }
-	            }
-	        rootElement.appendChild(row);
-	    }
-	    Window.alert("avant xml");
-	          Window.alert(" " + doc.toString());
-	          Window.alert("avant async");
-	      	EssaiSauvegardeAsync essai = (EssaiSauvegardeAsync) GWT.create(EssaiSauvegarde.class);
-	      	 Window.alert("avant callback");
-	          AsyncCallback callback = new AsyncCallback() {
-	        	    /*public void onSuccess(Void result) {
-	        	      Window.alert("le callback a marche");
-	        	    }
-					*/
-	        	    public void onFailure(Throwable caught) {
-	        	    	Window.alert("le callback a pas marche");
-	        	    	Window.alert(caught.toString());
-	        	    	Window.alert("passe le caught");
+			public void onSuccess(Object arg0) {
+				// Window.alert("le callback a marche");
 
-	        	    	 }
+			}
+		};
 
-					public void onSuccess(Object arg0) {
-						Window.alert("le callback a marche");
-						
-					}
-	        	  };
+		// (3) Make the call. Control flow will continue immediately and later
+		// 'callback' will be invoked when the RPC completes.
+		//
+		essai.sauvegarde(doc.toString(), callback);
 
-	        	  // (3) Make the call. Control flow will continue immediately and later
-	        	  // 'callback' will be invoked when the RPC completes.
-	        	  //
-	        	  essai.sauvegarde(doc.toString(), callback);
-	          
 	}
-	
-	
+
+	public String getAuteur() {
+		return auteur;
+	}
+
+	public void setAuteur(String auteur) {
+		this.auteur = auteur;
+	}
+
+	public String getNomPCM() {
+		return nomPCM;
+	}
+
+	public void setNomPCM(String nomPCM) {
+		this.nomPCM = nomPCM;
+	}
+
 }
-	

@@ -113,7 +113,7 @@ public class projetgl implements EntryPoint {
 	  //On attache des panneaux à d'autres
 	  panneauMatrice.setPanneauCom(panneauCommentaires);
 	  panneauCommande.setPanneauMatrice(panneauMatrice);
-	  
+	  layoutNomAuteur.setPanneauMat(panneauMatrice);
 	  
   }
 }

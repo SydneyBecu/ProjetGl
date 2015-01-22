@@ -26,6 +26,7 @@ public class NomAuteur extends HLayout {
 	final Label labelAnswer = new Label("Your answer here");
 	private String Nom = "";
 	private String Auteur = "";
+	private PanneauMatrice panneauMat;
 	//Ce qu'on va mettre dans le LayoutNomAuteur
 	  Label nom = new Label();
 	  Label auteur = new Label();
@@ -73,6 +74,7 @@ public class NomAuteur extends HLayout {
                          labelAnswer.setContents(value); 
                          Nom  = value ;
                          nom.setContents("<html><body>Nom de la matrice:    <b> "+Nom + "</b> </body></html>");
+                         panneauMat.setNomPCM(value);
                      } else {  
                          labelAnswer.setContents("Cancel");  
                      }  
@@ -95,6 +97,7 @@ public class NomAuteur extends HLayout {
                          labelAnswer.setContents(value);  
                          Auteur = value;
                          auteurReel.setContents("<b>"+Auteur+"</b>");
+                         panneauMat.setAuteur(value);
                      } else {  
                          labelAnswer.setContents("Cancel");  
                      }  
@@ -107,5 +110,14 @@ public class NomAuteur extends HLayout {
      this.addMember(layoutnom);
      this.addMember(layoutauteur);
      this.addMember(layoutboutons);
+     
 }
+
+	public PanneauMatrice getPanneauMat() {
+		return panneauMat;
+	}
+
+	public void setPanneauMat(PanneauMatrice panneauMat) {
+		this.panneauMat = panneauMat;
+	}
 }
