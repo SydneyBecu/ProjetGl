@@ -67,6 +67,10 @@ public class PanneauCommentaires extends VLayout {
 			}
 		}
 	}
+	
+	public void nettoyer(){
+		matriceCom= new String[100][100];
+	}
 
 
 }

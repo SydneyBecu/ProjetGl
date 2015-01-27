@@ -113,13 +113,33 @@ public class PanneauCommande extends VLayout {
     Sauvegarder.addClickHandler(new ClickHandler() {  
         public void onClick(ClickEvent event) {  
              
-            panneauMatrice.GridToXML();
+            //panneauMatrice.GridToXML();
+            panneauMatrice.stringToGrid(panneauMatrice.GridToXML());
             
         }  
     });  
+    
+    Charger.addClickHandler(new ClickHandler() {
+		
+		public void onClick(ClickEvent event) {
+			final Dialog dialogProperties = new Dialog();  
+            dialogProperties.setWidth(300);  
+            SC.askforValue("Nom du pcm et de l'auteur séparés d'un espace", "nom auteur", "", new ValueCallback() {  
+                  
+                public void execute(String value) {  
+                    if (value != null) {  
+                    	panneauMatrice.charger(value);
+                    } else {  
+                        labelAnswer.setContents("Cancel");  
+                    }  
+                }  
+            }, dialogProperties);  			
+		}
+	});
+    
     this.addMember(Sauvegarder);
     this.addMember(Charger);
-
+    
 
 }
 	

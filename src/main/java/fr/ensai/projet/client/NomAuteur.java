@@ -31,7 +31,10 @@ public class NomAuteur extends HLayout {
 	  Label nom = new Label();
 	  Label auteur = new Label();
 	  Label auteurReel = new Label();
-	  
+
+
+	
+
 	//On initialise le LayoutNomAuteur
 	public NomAuteur(){
 		super();
@@ -120,4 +123,16 @@ public class NomAuteur extends HLayout {
 	public void setPanneauMat(PanneauMatrice panneauMat) {
 		this.panneauMat = panneauMat;
 	}
+	
+	public void setNom(String nom) {
+		Nom = nom;
+		this.nom.setContents(nom);
+	}
+
+	public void setAuteur(String auteur) {
+		Auteur = auteur;
+		this.auteur.setContents(auteur);
+	}
+
+	
 }

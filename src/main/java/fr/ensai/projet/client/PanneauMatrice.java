@@ -15,6 +15,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.data.RecordList;
@@ -54,12 +56,13 @@ public class PanneauMatrice extends VLayout {
 	private final static int Hauteur = 400;
 
 	PanneauCommentaires panneauCom;
-	
+
 	IButton ajouterDesc = new IButton("Ajouter Description");
 	String auteur;
 	String nomPCM;
 	// La matrice
 	ListGrid Grid = new ListGrid();
+	NomAuteur nomAuteur;
 
 	// Le constructeur
 	public PanneauMatrice() {
@@ -305,7 +308,7 @@ public class PanneauMatrice extends VLayout {
 		this.panneauCom = panneauCom;
 	}
 
-	public void GridToXML(){
+	public String GridToXML(){
 		Document doc = XMLParser.createDocument();
 		Element rootElement = doc.createElement("ROOT");
 		doc.appendChild(rootElement);
@@ -392,8 +395,21 @@ public class PanneauMatrice extends VLayout {
 			numColonne.appendChild(doc.createTextNode(""+i));
 			Header.appendChild(nomHeader);
 			Header.appendChild(numColonne);
+			Element Type=doc.createElement("Type");
+			if(listeCol[i].getType().equals(ListGridFieldType.FLOAT)){
+			Type.appendChild(doc.createTextNode("Numerique"));		
+			}
+			else if (listeCol[i].getType().equals(ListGridFieldType.BOOLEAN)){
+				Type.appendChild(doc.createTextNode("Booleen"));		
+			}
+			else{
+				Type.appendChild(doc.createTextNode("Autre"));		
+			}
+			Header.appendChild(Type);
 			Headers.appendChild(Header);
+
 		}
+			
 		rootElement.appendChild(Cellules);
 		rootElement.appendChild(Headers);
 		
@@ -450,7 +466,7 @@ public class PanneauMatrice extends VLayout {
 		//
 		essai.sauvegarde(doc.toString(), callback);
 
-		
+		return doc.toString();
 	}
 
 	public void exportGridXML() {
@@ -512,6 +528,108 @@ public class PanneauMatrice extends VLayout {
 
 	}
 
+	public void stringToGrid(String xml) {
+		Document doc = XMLParser.parse(xml);
+
+		Grid.clear();
+		Grid.setData(new ListGridRecord[] {});
+		Grid.setFields(new ListGridField[] {});
+		panneauCom.nettoyer();
+		NodeList headers = doc.getElementsByTagName("Headers");
+		Node tabHeaders = headers.item(0);
+		NodeList heads = tabHeaders.getChildNodes();
+		int nbHead = heads.getLength();
+		Window.alert("" + nbHead);
+		for (int i = 0; i < nbHead; i++) {
+			String nomHead = heads.item(i).getChildNodes().item(0)
+					.getFirstChild().toString();
+			String numCol = heads.item(i).getChildNodes().item(1)
+					.getFirstChild().toString();
+			Window.alert(nomHead + numCol);
+			String type = heads.item(i).getChildNodes().item(2)
+					.getFirstChild().toString();
+			if(type.equals("Booleen")){
+			ajouterHeaderColBool(nomHead);
+			}
+			else if(type.equals("Numerique")){
+					ajouterHeaderColNumerique(nomHead);
+		    }
+			else{
+				ajouterHeaderCol(nomHead);
+			}
+		}
+		// Window.alert("Test"+doc.toString());
+		NodeList Cells = doc.getElementsByTagName("Cellules");
+		Node Tabcellules = Cells.item(0);
+		NodeList cellules = Tabcellules.getChildNodes();
+		int lo = cellules.getLength();
+
+		Window.alert("longueur" + lo);
+		// Avec ca on récupère le contenu des cellules
+		for (int i = 0; i < lo; i++) {
+			String numLigne = cellules.item(i).getChildNodes().item(0)
+					.getFirstChild().toString();
+			String numCol = cellules.item(i).getChildNodes().item(1)
+					.getFirstChild().toString();
+			String commentaire = cellules.item(i).getChildNodes().item(2)
+					.getFirstChild().toString();
+			String valeur = cellules.item(i).getChildNodes().item(3)
+					.getFirstChild().toString();
+			Window.alert("Li" + numLigne + " " + "Col" + numCol + " " + "comm"
+					+ commentaire + " " + "valuer" + valeur);
+
+			Grid.setEditValue(Integer.parseInt(numLigne) - 1,
+					Integer.parseInt(numCol), valeur);
+			panneauCom.ajouterCommentaire(Integer.parseInt(numLigne),
+					Integer.parseInt(numCol), commentaire);
+		}
+		Grid.saveAllEdits();
+		this.addMember(Grid);
+		NodeList Nom = doc.getElementsByTagName("Nom");
+		String nom = Nom.item(0).getFirstChild().toString();
+
+		NodeList Auteur = doc.getElementsByTagName("Auteur");
+		String auteur = Auteur.item(0).getFirstChild().toString();
+
+		this.nomPCM = nom;
+		this.auteur = auteur;
+		nomAuteur.setAuteur(auteur);
+		nomAuteur.setNom(nom);
+	}
+	
+	public void charger(String nomAut){
+		String envoi= "Chargement" + nomAut;
+		
+		ChargementAsync charg = (ChargementAsync) GWT
+				.create(Chargement.class);
+		// Window.alert("avant callback");
+		AsyncCallback callback = new AsyncCallback() {
+			/*
+			 * public void onSuccess(Void result) {
+			 * Window.alert("le callback a marche"); }
+			 */
+			public void onFailure(Throwable caught) {
+				Window.alert("le callback a pas marche");
+				Window.alert(caught.toString());
+				//Window.alert("passe le caught");
+
+			}
+
+			public void onSuccess(Object arg0) {
+				// Window.alert("le callback a marche");
+				Window.alert((String)arg0 );
+				stringToGrid((String) arg0);
+			}
+		};
+
+		// (3) Make the call. Control flow will continue immediately and later
+		// 'callback' will be invoked when the RPC completes.
+		//
+		charg.charger(envoi, callback);
+
+		
+	}
+
 	public String getAuteur() {
 		return auteur;
 	}
@@ -526,6 +644,14 @@ public class PanneauMatrice extends VLayout {
 
 	public void setNomPCM(String nomPCM) {
 		this.nomPCM = nomPCM;
+	}
+
+	public NomAuteur getNomAuteur() {
+		return nomAuteur;
+	}
+
+	public void setNomAuteur(NomAuteur nomAuteur) {
+		this.nomAuteur = nomAuteur;
 	}
 
 }
